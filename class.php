@@ -1,15 +1,15 @@
 <?php
 
-namespace Hals\Components;
+namespace Rundesigner\Components;
 
 /*
- * Файл компонента комментариев, отвечает за вывод комментариев
+ * Файл компонента комментариев, отвечает за вывод комментариев  
  */
 
 use Bitrix\Main\Engine\Contract\Controllerable,
     Bitrix\Main\Loader;
 
-class CHalsComments extends \CBitrixComponent implements Controllerable {
+class CRundesignerComments extends \CBitrixComponent implements Controllerable {
     /*
      * Проверка входных параметров 
      */
@@ -115,7 +115,7 @@ class CHalsComments extends \CBitrixComponent implements Controllerable {
             return;
         }
         global $USER;
-        
+
         $dataArray = [
             'ACTIVE_FROM' => \ConvertTimeStamp(time() + \CTimeZone::GetOffset(), "SHORT"),
             'IBLOCK_SECTION_ID' => false, // элемент лежит в корне раздела  
@@ -124,29 +124,28 @@ class CHalsComments extends \CBitrixComponent implements Controllerable {
             'ACTIVE' => 'Y', // активен  
             'DETAIL_TEXT' => $commentdata["text"],
         ];
-        
-        if($USER->IsAuthorized()){
+
+        if ($USER->IsAuthorized()) {
             $imya = $USER->GetFirstName();
-            $email = $USER->GetEmail();   
+            $email = $USER->GetEmail();
             $dataArray['MODIFIED_BY'] = $USER->GetID();
-        }else{
+        } else {
             $imya = $commentdata["imya"];
-            $email = $commentdata["email"];        
+            $email = $commentdata["email"];
         }
-        
+
         $el = new \CIBlockElement;
         $PROP = [];
-        $PROP[$postdata["propertyemail"]] = $email;  
-        $PROP[$postdata["propertyname"]] = $imya; 
-        $PROP[$postdata["propertyelementid"]] = $postdata['elementid']; 
-         
-        $dataArray['PROPERTY_VALUES'] = $PROP;        
+        $PROP[$postdata["propertyemail"]] = $email;
+        $PROP[$postdata["propertyname"]] = $imya;
+        $PROP[$postdata["propertyelementid"]] = $postdata['elementid'];
+
+        $dataArray['PROPERTY_VALUES'] = $PROP;
 
         $res = $el->Add($dataArray);
         \Bitrix\Main\Diag\Debug::dumpToFile($dataArray, "dataArray", "rundesignercomments_log.txt");
         \Bitrix\Main\Diag\Debug::dumpToFile($res, "result add", "rundesignercomments_log.txt");
         \Bitrix\Main\Diag\Debug::dumpToFile($el, "el", "rundesignercomments_log.txt");
-
     }
 
     /*
@@ -177,15 +176,14 @@ class CHalsComments extends \CBitrixComponent implements Controllerable {
         $result = [];
         $rsElement = \CIBlockElement::GetList($order, $filter, false, false, $select);
         while ($arr = $rsElement->Fetch()) {
-         //   \Bitrix\Main\Diag\Debug::dumpToFile($arr, "arr", "rundesignercomments_log.txt");
+            //   \Bitrix\Main\Diag\Debug::dumpToFile($arr, "arr", "rundesignercomments_log.txt");
             $row = new \stdClass();
             $row->id = $arr["ID"];
-            $row->imya = $arr["PROPERTY_".strtoupper($postdata["propertyname"])."_VALUE"];
-            $row->email = $arr["PROPERTY_".strtoupper($postdata["propertyemail"])."_VALUE"];
+            $row->imya = $arr["PROPERTY_" . strtoupper($postdata["propertyname"]) . "_VALUE"];
+            $row->email = $arr["PROPERTY_" . strtoupper($postdata["propertyemail"]) . "_VALUE"];
             $row->comment = $arr["DETAIL_TEXT"];
             $row->comentdate = \CIBlockFormatProperties::DateFormat('SHORT', MakeTimeStamp($arr["TIMESTAMP_X"], \CSite::GetDateFormat()));
             $result[] = $row;
-            
         }
         return $result;
     }

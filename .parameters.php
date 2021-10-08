@@ -1,59 +1,57 @@
 <?
-if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+
+if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
+    die();
 
 /*
  * Файл параметров, используется для отображения редактора параметров компонента 
  */
 
-if(!CModule::IncludeModule("iblock"))
-	return;
+if (!CModule::IncludeModule("iblock"))
+    return;
 
-if($arCurrentValues["IBLOCK_ID"] > 0)
-	$bWorkflowIncluded = CIBlock::GetArrayByID($arCurrentValues["IBLOCK_ID"], "WORKFLOW") == "Y" && CModule::IncludeModule("workflow");
+if ($arCurrentValues["IBLOCK_ID"] > 0)
+    $bWorkflowIncluded = CIBlock::GetArrayByID($arCurrentValues["IBLOCK_ID"], "WORKFLOW") == "Y" && CModule::IncludeModule("workflow");
 else
-	$bWorkflowIncluded = CModule::IncludeModule("workflow");
+    $bWorkflowIncluded = CModule::IncludeModule("workflow");
 
 //список типов блоков для выбора
 $arIBlockType = CIBlockParameters::GetIBlockTypes();
 
 //список инфоблоков для выбора
-$arIBlock=[];
-$rsIBlock = CIBlock::GetList(Array("sort" => "asc"), Array("TYPE" => $arCurrentValues["IBLOCK_TYPE"], "ACTIVE"=>"Y"));
-while($arr=$rsIBlock->Fetch())
-{
-	$arIBlock[$arr["ID"]] = "[".$arr["ID"]."] ".$arr["NAME"];
+$arIBlock = [];
+$rsIBlock = CIBlock::GetList(Array("sort" => "asc"), Array("TYPE" => $arCurrentValues["IBLOCK_TYPE"], "ACTIVE" => "Y"));
+while ($arr = $rsIBlock->Fetch()) {
+    $arIBlock[$arr["ID"]] = "[" . $arr["ID"] . "] " . $arr["NAME"];
 }
 
 //список свойств с типом привязка элемента для выбора  из инфоблока $arCurrentValues["IBLOCK_ID"]
 $arIBlockElementIDPropertyList = [];
-$sort = ["sort"=>"asc", "name"=>"asc"];
+$sort = ["sort" => "asc", "name" => "asc"];
 $filter = [
-    "ACTIVE"=>"Y", 
-    "IBLOCK_ID"=>$arCurrentValues["IBLOCK_ID"],
-    "PROPERTY_TYPE"=>"E" //привязка к элементам    
-        ]; 
+    "ACTIVE" => "Y",
+    "IBLOCK_ID" => $arCurrentValues["IBLOCK_ID"],
+    "PROPERTY_TYPE" => "E" //привязка к элементам    
+];
 $rsProp = CIBlockProperty::GetList($sort, $filter);
-while ($arr=$rsProp->Fetch())
-{
-	$arIBlockElementIDPropertyList[$arr["CODE"]] = "[".$arr["CODE"]."] ".$arr["NAME"];
+while ($arr = $rsProp->Fetch()) {
+    $arIBlockElementIDPropertyList[$arr["CODE"]] = "[" . $arr["CODE"] . "] " . $arr["NAME"];
 }
 
 //список свойств с типом строка для выбора хранения емайл  из инфоблока $arCurrentValues["IBLOCK_ID"]
 $arIBlockEmailPropertyList = [];
 $filter["PROPERTY_TYPE"] = "S"; //строка
 $rsProp = CIBlockProperty::GetList($sort, $filter);
-while ($arr=$rsProp->Fetch())
-{
-	$arIBlockEmailPropertyList[$arr["CODE"]] = "[".$arr["CODE"]."] ".$arr["NAME"];
+while ($arr = $rsProp->Fetch()) {
+    $arIBlockEmailPropertyList[$arr["CODE"]] = "[" . $arr["CODE"] . "] " . $arr["NAME"];
 }
 
 //список свойств с типом строка  для выбора хранения имени  из инфоблока $arCurrentValues["IBLOCK_ID"] за исключением $arCurrentValues["IBLOCK_PROPERTY_EMAIL"]
 $arIBlockNamePropertyList = [];
 $rsProp = CIBlockProperty::GetList($sort, $filter);
-while ($arr=$rsProp->Fetch())
-{
-    if($arCurrentValues["IBLOCK_PROPERTY_EMAIL"] != $arr["CODE"]){
-	$arIBlockNamePropertyList[$arr["CODE"]] = "[".$arr["CODE"]."] ".$arr["NAME"];
+while ($arr = $rsProp->Fetch()) {
+    if ($arCurrentValues["IBLOCK_PROPERTY_EMAIL"] != $arr["CODE"]) {
+        $arIBlockNamePropertyList[$arr["CODE"]] = "[" . $arr["CODE"] . "] " . $arr["NAME"];
     }
 }
 
