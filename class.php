@@ -3,11 +3,12 @@
 namespace Rundesigner\Components;
 
 /*
- * Файл компонента комментариев, отвечает за вывод комментариев  
+ * Файл компонента комментариев, отвечает за вывод комментариев
  */
 
 use Bitrix\Main\Engine\Contract\Controllerable,
-    Bitrix\Main\Loader;
+    Bitrix\Main\Loader,
+    Bitrix\Main\Engine\CurrentUser;
 
 class CRundesignerComments extends \CBitrixComponent implements Controllerable {
     /*
@@ -46,9 +47,8 @@ class CRundesignerComments extends \CBitrixComponent implements Controllerable {
      */
 
     public function executeComponent() {
-        global $USER;
-        $isauth = $USER->IsAuthorized() ? "1" : "";
-        if (!$this->_checkIblockModule()) {
+        $isauth = CurrentUser::get()->getId() ? "1" : "";
+        if (!$this->checkIblockModule()) {
             return;
         }
         /*
@@ -83,8 +83,8 @@ class CRundesignerComments extends \CBitrixComponent implements Controllerable {
      */
 
     public function postCommentAction($postdata, $commentdata) {
-        $this->_postComment($postdata, $commentdata);
-        $result = $this->_getComments($postdata);
+        $this->postComment($postdata, $commentdata);
+        $result = $this->getComments($postdata);
         return $result;
     }
 
@@ -93,11 +93,11 @@ class CRundesignerComments extends \CBitrixComponent implements Controllerable {
      */
 
     public function getCommentsAction($postdata) {
-        $result = $this->_getComments($postdata);
+        $result = $this->getComments($postdata);
         return $result;
     }
 
-    public function _checkIblockModule() {
+    public function checkIblockModule() {
         if (!Loader::includeModule("iblock")) {
             ShowError(GetMessage("IBLOCK_MODULE_NOT_INSTALLED"));
             return false;
@@ -109,12 +109,11 @@ class CRundesignerComments extends \CBitrixComponent implements Controllerable {
      * записывает комментарий
      */
 
-    public function _postComment($postdata, $commentdata) {
+    public function postComment($postdata, $commentdata) {
         //$commentdata  imya email text
-        if (!$this->_checkIblockModule()) {
+        if (!$this->checkIblockModule()) {
             return;
         }
-        global $USER;
 
         $dataArray = [
             'ACTIVE_FROM' => \ConvertTimeStamp(time() + \CTimeZone::GetOffset(), "SHORT"),
@@ -125,35 +124,35 @@ class CRundesignerComments extends \CBitrixComponent implements Controllerable {
             'DETAIL_TEXT' => $commentdata["text"],
         ];
 
-        if ($USER->IsAuthorized()) {
-            $imya = $USER->GetFirstName();
-            $email = $USER->GetEmail();
-            $dataArray['MODIFIED_BY'] = $USER->GetID();
+        if (CurrentUser::get()->getId()) {
+            $imya = CurrentUser::get()->GetFirstName();
+            $email = CurrentUser::get()->GetEmail();
+            $dataArray['MODIFIED_BY'] = CurrentUser::get()->GetID();
         } else {
             $imya = $commentdata["imya"];
             $email = $commentdata["email"];
         }
 
-        $el = new \CIBlockElement;
-        $PROP = [];
-        $PROP[$postdata["propertyemail"]] = $email;
-        $PROP[$postdata["propertyname"]] = $imya;
-        $PROP[$postdata["propertyelementid"]] = $postdata['elementid'];
+        $elem = new \CIBlockElement;
+        $prop = [];
+        $prop[$postdata["propertyemail"]] = $email;
+        $prop[$postdata["propertyname"]] = $imya;
+        $prop[$postdata["propertyelementid"]] = $postdata['elementid'];
 
-        $dataArray['PROPERTY_VALUES'] = $PROP;
+        $dataArray['PROPERTY_VALUES'] = $prop;
 
-        $res = $el->Add($dataArray);
+        $res = $elem->Add($dataArray);
         \Bitrix\Main\Diag\Debug::dumpToFile($dataArray, "dataArray", "rundesignercomments_log.txt");
         \Bitrix\Main\Diag\Debug::dumpToFile($res, "result add", "rundesignercomments_log.txt");
-        \Bitrix\Main\Diag\Debug::dumpToFile($el, "el", "rundesignercomments_log.txt");
+        \Bitrix\Main\Diag\Debug::dumpToFile($elem, "el", "rundesignercomments_log.txt");
     }
 
     /*
      * возвращает список комментариев
      */
 
-    public function _getComments($postdata) {
-        if (!$this->_checkIblockModule()) {
+    public function getComments($postdata) {
+        if (!$this->checkIblockModule()) {
             return;
         }
         //iblockid: "17", propertyelementid: "85", propertyemail: "84", propertyname: "83", elementid: "3"}

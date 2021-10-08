@@ -85,8 +85,6 @@
 
 //очистим форму покажем сообщение, что комментарий добавлен
         _afterComment() {
-            $("#rundesignercomment-input-imya").val('');
-            $("#rundesignercomment-input-email").val('');
             $("#rundesignercomment-input-text").val('');
         }
 

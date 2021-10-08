@@ -1,29 +1,29 @@
-<?
+<?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
     die();
 /*
  * Шаблон компонента, отвечает за вывод результатов работы компонента
  */
 ?>
-<? if (!empty($arResult["ERRORPARAMS"])) { ?>
+<?php if (!empty($arResult["ERRORPARAMS"])) { ?>
     <div id="rundesignercommentsparamserror" class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong><?= GetMessage("RUNDESIGNER_ERRORPARAMSMESSAGE") ?>!</strong> 
+        <strong><?php echo GetMessage("RUNDESIGNER_ERRORPARAMSMESSAGE") ?>!</strong> 
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <?
+    <?php
     return;
 }
 ?>
 <div id="rundesignercommentsdata" 
-     data-param-iblockid="<?= $arParams["IBLOCK_ID"] ?>" 
-     data-param-propertyelementid="<?= $arParams["IBLOCK_PROPERTY_ELEMENT_ID"] ?>" 
-     data-param-propertyemail="<?= $arParams["IBLOCK_PROPERTY_EMAIL"] ?>" 
-     data-param-propertyname="<?= $arParams["IBLOCK_PROPERTY_NAME"] ?>" 
-     data-param-elementid="<?= $arParams["IBLOCK_ELEMENT_ID"] ?>" 
-     data-message-error="<?= GetMessage("RUNDESIGNER_MESSAGE_ERROR") ?>" 
-     data-message-wrongform="<?= GetMessage("RUNDESIGNER_MESSAGE_WRONGFORM") ?>" 
+     data-param-iblockid="<?php echo $arParams["IBLOCK_ID"] ?>" 
+     data-param-propertyelementid="<?php echo $arParams["IBLOCK_PROPERTY_ELEMENT_ID"] ?>" 
+     data-param-propertyemail="<?php echo $arParams["IBLOCK_PROPERTY_EMAIL"] ?>" 
+     data-param-propertyname="<?php echo $arParams["IBLOCK_PROPERTY_NAME"] ?>" 
+     data-param-elementid="<?php echo $arParams["IBLOCK_ELEMENT_ID"] ?>" 
+     data-message-error="<?php echo GetMessage("RUNDESIGNER_MESSAGE_ERROR") ?>" 
+     data-message-wrongform="<?php echo GetMessage("RUNDESIGNER_MESSAGE_WRONGFORM") ?>" 
      class="container justify-content-center mt-5 border-left border-right">
     <div class="d-flex justify-content-center pt-3 pb-2">
         <form class="w-100">
@@ -31,15 +31,15 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
             //не показываем для авторизованных
             $dnone = empty($arResult["isauth"]) ? "" : "d-none";
             ?>
-        <div id="hcimyaemail" class="form-group row <?= $dnone?> m-0">
-            <input id="rundesignercomment-input-imya" type="text" name="imya" placeholder="<?= GetMessage("RUNDESIGNER_MESSAGE_IMYA") ?>" class="col form-control addtxt"> 
-            <input id="rundesignercomment-input-email" type="email" name="email" placeholder="<?= GetMessage("RUNDESIGNER_MESSAGE_EMAIL") ?>" class="col form-control addtxt"> 
+        <div id="hcimyaemail" class="form-group row <?php echo $dnone?> m-0">
+            <input id="rundesignercomment-input-imya" type="text" name="imya" placeholder="<?php echo GetMessage("RUNDESIGNER_MESSAGE_IMYA") ?>" class="col form-control addtxt"> 
+            <input id="rundesignercomment-input-email" type="email" name="email" placeholder="<?php echo GetMessage("RUNDESIGNER_MESSAGE_EMAIL") ?>" class="col form-control addtxt"> 
         </div>
         <div  class="form-group row m-0">
-            <textarea id="rundesignercomment-input-text" name="comment" placeholder="<?= GetMessage("RUNDESIGNER_MESSAGE_ADD") ?>" class="mt-2 form-control addtxt"></textarea> 
+            <textarea id="rundesignercomment-input-text" name="comment" placeholder="<?php echo GetMessage("RUNDESIGNER_MESSAGE_ADD") ?>" class="mt-2 form-control addtxt"></textarea> 
         </div>
             <div  class="form-group row m-0">
-            <button id="rundesignercommentssend" type="submit" class="mt-2 btn btn-primary"><?= GetMessage("RUNDESIGNER_MESSAGE_SEND") ?></button>
+            <button id="rundesignercommentssend" type="submit" class="mt-2 btn btn-primary"><?php echo GetMessage("RUNDESIGNER_MESSAGE_SEND") ?></button>
             </div>
           </form>  
     </div>
@@ -47,7 +47,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
    
 
     <div id="rundesignernocomments" class="d-none alert alert-success alert-dismissible fade show justify-content-center" role="alert">
-        <strong><?= GetMessage("RUNDESIGNER_NOCOMMENTS") ?></strong> 
+        <strong><?php echo GetMessage("RUNDESIGNER_NOCOMMENTS") ?></strong> 
     </div>
 </div>
 <div id="hcrowtemplate" class="d-none justify-content-center py-2 pb-3">
@@ -58,4 +58,4 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true)
         </div>
     </div>
 </div>
-<? CJSCore::Init(['ajax', 'jquery']); ?>
+<?php CJSCore::Init(['ajax', 'jquery']); ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 $MESS ['RUNDESIGNER_ERRORPARAMSMESSAGE'] = "Ошибка! Необходимые параметры компонента комментариев rundesigner.comments отсутвуют.";
 $MESS ['RUNDESIGNER_NOCOMMENTS'] = "Комментариев нет. Вы можете стать первым, кто оставит комментарий.";
 $MESS ['RUNDESIGNER_MESSAGE_ERROR'] = "Произошла ошибка при запросе данных, обратитесь к администратору.";
